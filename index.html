@@ -3,889 +3,346 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Manager - Before The Bloat</title>
+    <title>App List</title>
     <style>
-        :root {
-            --background: #0a0c0d;
-            --card-background: #121618;
-            --text-primary: #e0e0e0;
-            --text-secondary: #a0a0a0;
-            --accent-color: #4ade80;
-            --accent-hover: #22c55e;
-            --button-secondary: #1a1f23;
-            --commit-bg: #1e2428;
-        }
-
-        .light-theme {
-            --background: #f0f0f0;
-            --card-background: #ffffff;
-            --text-primary: #333333;
-            --text-secondary: #666666;
-            --accent-color: #4ade80;
-            --accent-hover: #22c55e;
-            --button-secondary: #e0e0e0;
-            --commit-bg: #f5f5f5;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: var(--background);
-            color: var(--text-primary);
-            line-height: 1.5;
-            min-height: 100vh;
-            transition: background-color 0.3s, color 0.3s;
+            margin: 0;
+            padding: 16px;
+            background-color: #000000;
+            font-family: system-ui, -apple-system, sans-serif;
         }
 
-        body.modal-open {
-            overflow: hidden;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid #2C2D32;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .icon-button {
-            -webkit-tap-highlight-color: transparent !important;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            cursor: pointer;
-            padding: 0.5rem;
-            transition: color 0.3s;
-        }
-
-        .icon-button:hover,
-        .icon-button:active {
-            color: var(--accent-color);
-        }
-
-        main {
-            padding: 1rem;
-            max-width: 28rem;
+        .container {
+            max-width: 800px;
             margin: 0 auto;
         }
 
         .card {
-            background-color: var(--card-background);
-            border-radius: 0.75rem;
-            overflow: hidden;
-            margin-top: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1.5rem 1.5rem 1rem;
-        }
-
-        .app-icon {
-            width: 6rem;
-            height: 6rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-        }
-
-        .app-icon img {
+            background-color: #18181B;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 16px;
             width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .app-info {
-            text-align: center;
-        }
-
-        .app-name {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: var(--accent-color);
-        }
-
-        .version-info {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
+            box-sizing: border-box;
         }
 
         .card-content {
-            padding: 1rem 1.5rem 1.5rem;
-        }
-
-        .button {
-            -webkit-tap-highlight-color: transparent !important;
-            display: inline-block;
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-
-        .button:active {
-            transform: translateY(1px);
-        }
-
-        .button-primary {
-            background-color: var(--accent-color);
-            color: #0a0c0d;
-        }
-
-        .button-primary:hover {
-            background-color: var(--accent-hover);
-        }
-
-        .button-group {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .button-secondary {
-            background-color: var(--button-secondary);
-            color: var(--text-primary);
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1rem 0.5rem;
-            transition: background-color 0.3s, color 0.3s;
+            gap: 16px;
         }
 
-        .button-secondary:hover {
-            background-color: #252b30;
-        }
-
-        .light-theme .button-secondary:hover {
-            background-color: #e0e0e0;
-        }
-
-        .button-secondary:active {
-            background-color: #252b30;
-        }
-
-        .light-theme .button-secondary:active {
-            background-color: #d0d0d0;
-        }
-
-        .button-secondary svg {
-            stroke: var(--text-primary);
-            transition: stroke 0.3s;
-        }
-
-        .button-secondary:hover svg,
-        .button-secondary:active svg {
-            stroke: var(--accent-color);
-        }
-
-        .other-apps-card {
-            background-color: #15191c;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            width: 100%;
-            max-width: 400px;
-            margin: 1rem auto;
-        }
-
-        .light-theme .other-apps-card {
-            background-color: #f5f5f5;
-        }
-
-        .other-apps-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #ffffff;
-        }
-
-        .light-theme .other-apps-title {
-            color: #333333;
-        }
-
-        .other-app-button {
-            -webkit-tap-highlight-color: transparent !important;
-            background-color: var(--button-secondary);
-            border-radius: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            width: 100%;
-            margin-bottom: 0.75rem;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .light-theme .other-app-button {
-            color: #333333;
-        }
-
-        .other-app-button:hover {
-            background-color: #252b30;
-        }
-
-        .light-theme .other-app-button:hover {
-            background-color: #e0e0e0;
-        }
-
-        .other-app-button:active {
-            background-color: #252b30;
-        }
-
-        .light-theme .other-app-button:active {
-            background-color: #d0d0d0;
-        }
-
-        .other-app-button svg {
-            width: 1.5rem;
-            height: 1.5rem;
-            stroke: #d1d1d1;
-        }
-
-        .light-theme .other-app-button svg {
-            stroke: #666666;
-        }
-
-        .other-app-button:hover svg,
-        .other-app-button:active svg {
-            stroke: #ffffff;
-        }
-
-        .light-theme .other-app-button:hover svg,
-        .light-theme .other-app-button:active svg {
-            stroke: #333333;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: rgba(0,0,0,0.7);
-        }
-
-        .modal-content {
-            background-color: var(--card-background);
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            border-radius: 0.5rem;
-            max-height: 70vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-scroll {
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .light-theme .close:hover,
-        .light-theme .close:focus {
-            color: #000;
-        }
-
-        #extensionModal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            overflow: hidden;
-        }
-
-        .extension-content {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 80%;
-            background-color: var(--card-background);
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            overflow-y: auto;
-            transition: transform 0.2s ease-out;
-            transform: translateY(100%);
-        }
-
-        .extension-content.open {
-            transform: translateY(0);
-        }
-
-        #extensionSearch {
-            width: calc(100% - 40px);
-            padding: 10px;
-            margin: 20px;
-            border: 1px solid var(--button-secondary);
-            border-radius: 5px;
-            background-color: var(--card-background);
-            color: var(--text-primary);
-        }
-
-        .extension-list {
-            list-style-type: none;
-            padding: 0 20px;
-        }
-
-        .extension-item {
-            -webkit-tap-highlight-color: transparent !important;
-            background-color: var(--button-secondary);
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .extension-header {
-            -webkit-tap-highlight-color: transparent !important;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .extension-header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .extension-icon {
-            width: 40px;
-            height: 40px;
+        .app-icon {
+            width: 80px;
+            height: 80px;
             flex-shrink: 0;
         }
 
-        .extension-details {
-            display: none;
-            margin-top: 10px;
+        .app-info {
+            flex: 1;
+            min-width: 0;
         }
 
-        .extension-description {
-            margin-bottom: 10px;
-        }
-
-        .extension-images {
-            -webkit-tap-highlight-color: transparent !important;
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-        }
-
-        .extension-images img {
-            -webkit-tap-highlight-color: transparent !important;
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .extension-item button {
-            -webkit-tap-highlight-color: transparent !important;
-            background-color: var(--accent-color);
+        .app-title {
             color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
+            font-size: 24px;
+            margin: 0 0 8px 0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
-        .extension-item button:hover {
-            -webkit-tap-highlight-color: transparent !important;
-            background-color: var(--accent-hover);
+        .app-description {
+            color: #A1A1AA;
+            margin: 0 0 16px 0;
+            line-height: 1.5;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
-        .changelog-list {
-            list-style-type: none;
-            padding: 0;
+        .app-meta {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
         }
 
-        .changelog-version {
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background-color: var(--button-secondary);
-            border-radius: 0.5rem;
+        .actions {
+            display: flex;
+            gap: 8px;
         }
 
-        .changelog-version h3 {
-            margin-bottom: 0.5rem;
-            color: var(--accent-color);
-        }
-
-        .changelog-changes {
-            list-style-type: disc;
-            padding-left: 1.5rem;
-        }
-
-        .changelog-changes li {
-            margin-bottom: 0.25rem;
-        }
-
-        .floating-close {
-            -webkit-tap-highlight-color: transparent !important;
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--button-secondary);
-            color: var(--text-primary);
-            border: none;
-            border-radius: 50%;
+        .icon-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 40px;
             height: 40px;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 50%;
+            background-color: #27272A;
+            transition: background-color 0.3s ease, transform 0.3s ease;
             cursor: pointer;
-            z-index: 1002;
-            transition: opacity 0.2s;
         }
 
-        .floating-close:hover {
-            background-color: var(--accent-color);
+        .icon-link:hover {
+            background-color: #3F3F46;
         }
 
-        .image-popup {
-            display: none;
-            position: fixed;
-            z-index: 1001;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.9);
-            justify-content: center;
-            align-items: center;
+        .icon-link:active {
+            transform: scale(0.95);
         }
 
-        .image-popup img {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-        }
-
-        .extension-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .extension-title svg {
+        .icon {
             width: 24px;
             height: 24px;
+            transition: color 0.3s ease;
         }
 
-        .modal-header {
+        .github-icon .icon {
+            color: #0284c7;
+        }
+
+        .info-icon .icon {
+            color: #ff9800;
+        }
+
+        .download-icon .icon {
+            color: #16a34a;
+        }
+
+        .icon-link:hover .icon {
+            color: #fff;
+        }
+
+        .toast {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3F3F46;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.5s ease;
+        }
+
+        .toast.show {
+            top: 20px;
+            opacity: 1;
+        }
+
+        .toast-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
         }
 
-        .modal-header h2 {
-            margin: 0;
+        .toast-label {
+            font-size: 14px;
+            color: #A1A1AA;
+        }
+
+        .toast-value {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .status {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status.beta {
+            background-color: #8B5CF6;
+            color: white;
+        }
+
+        .status.stable {
+            background-color: #10B981;
+            color: white;
+        }
+
+        .status.alpha {
+            background-color: #F59E0B;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            .app-meta {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Home</h1>
-        <div>
-         <button id="extensionButton" class="icon-button" aria-label="Extensions">
-                
-            </button>
-            <button id="themeToggle" class="icon-button" aria-label="Toggle theme">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            </button>
-        </div>
-    </header>
-    <main>
+    <div class="container">
         <div class="card">
-            <div class="card-header">
-                <div class="app-icon">
-                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-xVBDP7cAVuiTozXkWW00I43t2pEzVV.png" alt="Before The Bloat Logo">
-                </div>
-                <div class="app-info">
-                    <h2 class="app-name">Before The Bloat</h2>
-                    <p class="version-info">Previous: 1.3.1 - Stable</p>
-                    <p class="version-info">Latest: 1.3.2 - Stable</p>
-                </div>
-            </div>
             <div class="card-content">
-                <button class="button button-primary" onclick="window.location.href='https://www.mediafire.com/file/z6to2pwf1736kcs/1.3.2.apk/file';">Install</button>
-                <div class="button-group">
-                    <button class="button button-secondary" onclick="window.location.href='btb://btb/';">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        Launch
-                    </button>
-                    <button id="infoButton" class="button button-secondary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                        Info
-                    </button>
-                    <button class="button button-secondary" onclick="window.location.href='https://discord.gg/NQsSptn92K';">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                        Discord
-                    </button>
-                </div>
-                <div class="other-apps-card">
-                    <h2 class="other-apps-title">Other Applications</h2>
-                    <div class="other-apps">
-                        <button class="other-app-button" onclick="window.location.href='beforethebloat.github.io;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                            </svg>
-                            App Manager (coming soon)
-                        </button>
-                        <button class="other-app-button" onclick="window.location.href='https://github.com/BeforeTheBloat/mobile-tools/releases/download/PMMP/PocketMine-MP.apk';">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-                                <line x1="6" y1="6" x2="6.01" y2="6"></line>
-                                <line x1="6" y1="18" x2="6.01" y2="18"></line>
-                            </svg>
-                            Pocketmine-MP
-                        </button>
-                        <button class="other-app-button" onclick="window.location.href='https://github.com/BeforeTheBloat/mobile-tools/releases/download/BTF/blocktopograph.apk';">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            Blocktopograph
-                        </button>
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bookshelf-wUPvdI5dIxes0BlAP6NUGaixvKym7P.png" alt="Minecraft bookshelf block" class="app-icon">
+                <div class="app-info">
+                    <h2 class="app-title">Minecraft 1.1.5</h2>
+                    <p class="app-description">
+                        A modified 1.1.5 APK, filled with custom + previously hidden commands, xbox sign-in support, free skins, and pre-added servers.
+                    </p>
+                    <div class="app-meta">
+                        <div class="actions">
+                            <a href="" class="icon-link github-icon" aria-label="GitHub repository">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+                                    <path d="M9 18c-4.51 2-5-2-7-2"/>
+                                </svg>
+                            </a>
+                            <div class="icon-link info-icon" aria-label="Show app information" onclick="showToast('toast-1')">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                            </div>
+                            <a href="hhttps://archive.org/download/minecraft-115/Minecraft_115.apk" class="icon-link download-icon" aria-label="Download app">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
 
-    <div id="changelogModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Changelog</h2>
-                <span class="close">&times;</span>
+        <div class="card">
+            <div class="card-content">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/furnace-TBDURqAxWQqM7R4GL3zaWA1qmuHTcu.png" alt="Minecraft furnace block" class="app-icon">
+                <div class="app-info">
+                    <h2 class="app-title">Minecraft 0.15.10</h2>
+                    <p class="app-description">
+                        0.15.10 APK with a fixed start screen and sign-in support implemented.
+                    </p>
+                    <div class="app-meta">
+                        <div class="actions">
+                            <a href="https://github.com/example/app2" class="icon-link github-icon" aria-label="GitHub repository">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+                                    <path d="M9 18c-4.51 2-5-2-7-2"/>
+                                </svg>
+                            </a>
+                            <div class="icon-link info-icon" aria-label="Show app information" onclick="showToast('toast-2')">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                            </div>
+                            <a href="https://example.com/download/app2" class="icon-link download-icon" aria-label="Download app">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-scroll">
-                <ul class="changelog-list">
-                    <li class="changelog-version">
-                        <h3>Version 1.3.1 (Latest)</h3>
-                        <ul class="changelog-changes">
-                            <li>Fixed UI</li>
-                            <li>Removed unnecessary files</li>
-                            <li>Added a Change Log to the start screen</li>
-                        </ul>
-                    </li>
-                    <li class="changelog-version">
-                        <h3>Version 1.3.0</h3>
-                        <ul class="changelog-changes">
-                            <li>Added hidden commands</li>
-                            <li>Bug fixes and stability improvements</li>
-                        </ul>
-                    </li>
-                    <li class="changelog-version">
-                        <h3>Version 1.2.9</h3>
-                        <ul class="changelog-changes">
-                            <li>I forgor</li>
-                        </ul>
-                    </li>
-                </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/craftingtable-ttEfkXw9HmLhDjQxpRLsLrfQNZccXa.png" alt="Minecraft crafting table block" class="app-icon">
+                <div class="app-info">
+                    <h2 class="app-title">Minecraft 0.8.1</h2>
+                    <p class="app-description">
+                        0.8.1 APK with bug fixes, no sign in support as of right now. :(
+                    </p>
+                    <div class="app-meta">
+                        <div class="actions">
+                            <a href="https://github.com/example/app3" class="icon-link github-icon" aria-label="GitHub repository">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+                                    <path d="M9 18c-4.51 2-5-2-7-2"/>
+                                </svg>
+                            </a>
+                            <div class="icon-link info-icon" aria-label="Show app information" onclick="showToast('toast-3')">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                            </div>
+                            <a <a href="https://apps.rediafile.com/35y/Minecraft_0.8.1.apk"  class="icon-link download-icon" aria-label="Download app">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="extensionModal">
-        <button class="floating-close">&times;</button>
-        <div class="extension-content">
-            <h2 class="extension-title">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg>
-                Extensions
-            </h2>
-            <input type="text" id="extensionSearch" placeholder="Search extensions...">
-            <ul class="extension-list" id="extensionList">
-                <!-- Extension items will be dynamically added here -->
-            </ul>
+    <div id="toast-1" class="toast">
+        <div class="toast-content">
+            <div class="toast-row">
+                <span class="toast-label">Status:</span>
+                <span class="status stable">Stable</span>
+            </div>
+            <div class="toast-row">
+                <span class="toast-label">Latest:</span>
+                <span class="toast-value">1.3.7</span>
+            </div>
         </div>
     </div>
 
-    <div id="imagePopup" class="image-popup">
-        <img id="popupImage" src="" alt="Expanded image">
+    <div id="toast-2" class="toast">
+        <div class="toast-content">
+            <div class="toast-row">
+                <span class="toast-label">Status:</span>
+                <span class="status stable">Stable</span>
+            </div>
+            <div class="toast-row">
+                <span class="toast-label">Latest:</span>
+                <span class="toast-value">0.6.2</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-3" class="toast">
+        <div class="toast-content">
+            <div class="toast-row">
+                <span class="toast-label">Status:</span>
+                <span class="status alpha">Alpha</span>
+            </div>
+            <div class="toast-row">
+                <span class="toast-label">Latest:</span>
+                <span class="toast-value">0.3.7</span>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Get the modals
-        var changelogModal = document.getElementById("changelogModal");
-        var extensionModal = document.getElementById("extensionModal");
-        var extensionContent = document.querySelector(".extension-content");
-        var imagePopup = document.getElementById("imagePopup");
-        var popupImage = document.getElementById("popupImage");
-
-        // Get the buttons that open the modals
-        var infoBtn = document.getElementById("infoButton");
-        var extensionBtn = document.getElementById("extensionButton");
-
-        // Get the <span> elements that close the modals
-        var spans = document.getElementsByClassName("close");
-
-        // When the user clicks the button, open the modal 
-        infoBtn.onclick = function() {
-            changelogModal.style.display = "block";
-            document.body.classList.add('modal-open');
-        }
-
-
-
-        // Theme toggle functionality
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-
-        // Function to set a cookie
-        function setCookie(name, value, days) {
-            let expires = "";
-            if (days) {
-                let date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-        }
-
-        // Function to get a cookie
-        function getCookie(name) {
-            let nameEQ = name + "=";
-            let ca = document.cookie.split(';');
-            for(let i=0;i < ca.length;i++) {
-                let c = ca[i];
-                while (c.charAt(0)==' ') c = c.substring(1,c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-            }
-            return null;
-        }
-
-        // code stuff
-
-        // When the user clicks on <span> (x), close the modal
-        for (let span of spans) {
-            span.onclick = function() {
-                changelogModal.style.display = "none";
-                document.body.classList.remove('modal-open');
-            }
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == changelogModal) {
-                changelogModal.style.display = "none";
-                document.body.classList.remove('modal-open');
-            }
-            if (event.target == imagePopup) {
-                imagePopup.style.display = "none";
-            }
-        }
-
-        // Function to close the extension modal
-        function closeExtensionModal() {
-            extensionContent.classList.remove('open');
+        function showToast(toastId) {
+            const toast = document.getElementById(toastId);
+            toast.classList.add('show');
             setTimeout(() => {
-                extensionModal.style.display = "none";
-                document.body.classList.remove('modal-open');
-            }, 200);
-        }
-  
-        // Function to toggle theme
-        function toggleTheme() {
-            if (body.classList.contains('light-theme')) {
-                body.classList.remove('light-theme');
-                themeToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
-                setCookie('theme', 'dark', 30);
-            } else {
-                body.classList.add('light-theme');
-                themeToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
-                setCookie('theme', 'light', 30);
-            }
-        }
-
-        // Event listener for theme toggle
-        themeToggle.addEventListener('click', toggleTheme);
-
-        // Check for saved theme preference
-        window.onload = function() {
-            let theme = getCookie('theme');
-            if (theme === 'light') {
-                body.classList.add('light-theme');
-                themeToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
-            }
-        }
-
-        // Extension search functionality
-        const extensionSearch = document.getElementById('extensionSearch');
-        const extensionList = document.getElementById('extensionList');
-
-        const extensions = [
-            { 
-                name: "Cool Resource Pack", 
-                tags: ["resource pack"],
-                icon: "/placeholder.svg?height=40&width=40",
-                description: "An amazing resource pack that enhances the visual experience of your game.",
-                images: ["/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100"]
-            },
-            { 
-                name: "Awesome World", 
-                tags: ["world"],
-                icon: "/placeholder.svg?height=40&width=40",
-                description: "Explore a vast and immersive world filled with unique landscapes and hidden treasures.",
-                images: ["/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100"]
-            },
-            { 
-                name: "Super Server",
-                tags: ["server"],
-                icon: "/placeholder.svg?height=40&width=40",
-                description: "A high-performance server solution for hosting large multiplayer games.",
-                images: ["/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100"]
-            },
-            { 
-                name: "Amazing Addon",                 
-                tags: ["addon"],
-                icon: "/placeholder.svg?height=40&width=40",
-                description: "Enhance your gameplay with new features, items, and mechanics.",
-                images: ["/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100"]
-            },
-            { 
-                name: "Fancy Skin Patch", 
-                tags: ["skin patch"],
-                icon: "/placeholder.svg?height=40&width=40",
-                description: "Customize your character with this collection of high-quality skins.",
-                images: ["/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100"]
-            },
-            { 
-                name: "Ultimate Resource Pack", 
-                tags: ["resource pack", "addon"],
-                icon: "/placeholder.svg?height=40&width=40",
-                description: "A comprehensive resource pack that also includes additional gameplay features.",
-                images: ["/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100"]
-            },
-            { 
-                name: "Mega World Server", 
-                tags: ["world", "server"],
-                icon: "/placeholder.svg?height=40&width=40",
-                description: "A massive multiplayer world hosted on a high-performance server.",
-                images: ["/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100"]
-            },
-        ];
-
-        function renderExtensions(filteredExtensions) {
-            extensionList.innerHTML = '';
-            filteredExtensions.forEach(ext => {
-                const li = document.createElement('li');
-                li.className = 'extension-item';
-                li.innerHTML = `
-                    <div class="extension-header">
-                        <div class="extension-header-left">
-                            <img src="${ext.icon}" alt="${ext.name} icon" class="extension-icon">
-                            <span>${ext.name}</span>
-                        </div>
-                        <button onclick="event.stopPropagation(); alert('Installing ${ext.name}')">Install</button>
-                    </div>
-                    <div class="extension-details">
-                        <p class="extension-description">${ext.description}</p>
-                        <div class="extension-images">
-                            ${ext.images.map(img => `<img src="${img}" alt="${ext.name} preview" onclick="expandImage('${img}')">`).join('')}
-                        </div>
-                    </div>
-                `;
-                li.addEventListener('click', function() {
-                    this.querySelector('.extension-details').style.display = 
-                        this.querySelector('.extension-details').style.display === 'none' ? 'block' : 'none';
-                });
-                extensionList.appendChild(li);
-            });
-        }
-
-        extensionSearch.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const filteredExtensions = extensions.filter(ext => 
-                ext.name.toLowerCase().includes(searchTerm) || 
-                ext.tags.some(tag => tag.includes(searchTerm))
-            );
-            renderExtensions(filteredExtensions);
-        });
-
-        // Initial render
-        renderExtensions(extensions);
-
-        const floatingCloseBtn = document.querySelector('.floating-close');
-        floatingCloseBtn.addEventListener('click', function() {
-            this.style.opacity = '0';
-            setTimeout(() => {
-                closeExtensionModal();
-                this.style.opacity = '1';
-            }, 200);
-        });
-
-        function expandImage(src) {
-            popupImage.src = src;
-            imagePopup.style.display = "flex";
+                toast.classList.remove('show');
+            }, 1300); // Duration set to 1300ms
         }
     </script>
 </body>
 </html>
+
