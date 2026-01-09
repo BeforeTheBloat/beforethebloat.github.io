@@ -3,408 +3,1176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App List</title>
+    <meta name="author" content="Keirazelle / xzelleiv">
+    <meta name="description" content="Experience the golden age of Beta 1.7.3 in modern Bedrock Edition.">
+    <meta property="og:title" content="Betafied">
+    <meta property="og:description" content="Experience the golden age of Beta 1.7.3 in modern Bedrock Edition.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Betafied</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            margin: 0;
-            padding: 16px;
-            background-color: #000000;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
+    :root {
+        --bg: #120c01;
+        --panel: rgba(45, 35, 30, 0.75);
+        --border: rgba(107, 76, 59, 0.5);
+        --accent: #c8933b;
+        --accent-hover: #e0a852;
+        --text: #f1e6d6;
+        --muted: #9b7f6a;
+        --danger: #ff6b6b;
+        --success: #8ee4af;
+        --glass: blur(6px);
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        --font-pixel: "Press Start 2P", cursive;
+        --font-body: "Inter", sans-serif;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+    body {
+        margin: 0;
+        background-color: var(--bg);
+        background-image: url("data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='64' height='64' fill='%23120c01'/%3E%3Crect x='0' y='0' width='32' height='32' fill='%23181208' opacity='0.5'/%3E%3Crect x='32' y='32' width='32' height='32' fill='%23181208' opacity='0.5'/%3E%3C/svg%3E");
+        background-size: 64px;
+        color: var(--text);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        user-select: none;
+    }
 
-        .card {
-            background-color: #18181B;
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 16px;
-            width: 100%;
-            box-sizing: border-box;
-        }
+    body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        pointer-events: none;
+        z-index: -1;
+        transform: translateZ(0);
+        will-change: opacity, transform;
+        backface-visibility: hidden;
+    }
 
-        .card-content {
-            display: flex;
-            gap: 16px;
-        }
+    a {
+        text-decoration: none;
+        color: inherit;
+        -webkit-tap-highlight-color: transparent;
+    }
 
-        .app-icon {
-            width: 80px;
-            height: 80px;
-            flex-shrink: 0;
-        }
+    * {
+        -webkit-tap-highlight-color: transparent;
+        box-sizing: border-box;
+    }
 
-        .app-info {
-            flex: 1;
-            min-width: 0;
-        }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(26, 22, 20, 0.65);
+        backdrop-filter: var(--glass);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
 
-        .app-title {
-            color: white;
-            font-size: 24px;
-            margin: 0 0 8px 0;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
+    .logo {
+        color: var(--accent);
+        font-size: 20px;
+        font-family: var(--font-pixel);
+        text-shadow: 0 0 10px rgba(200, 147, 59, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
 
-        .app-description {
-            color: #A1A1AA;
-            margin: 0 0 16px 0;
-            line-height: 1.5;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
+    .logo .icon-crafting {
+        width: 44px;
+        height: 44px;
+        image-rendering: pixelated;
+    }
 
-        .app-meta {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 8px;
-        }
+    .logo .logo-text {
+        font-size: 16px;
+        color: var(--accent);
+    }
 
-        .actions {
-            display: flex;
-            gap: 8px;
-        }
+    .nav-links {
+        display: flex;
+        gap: 15px;
+    }
 
-        .icon-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #27272A;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
+    .nav-item {
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 600;
+        padding: 8px;
+        border-radius: 8px;
+        background: rgba(26, 22, 20, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        transition: all 0.2s;
+        font-family: var(--font-pixel);
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
 
-        .icon-link:hover {
-            background-color: #3F3F46;
-        }
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
 
-        .icon-link:active {
-            transform: scale(0.95);
-        }
+    .nav-item:hover,
+    .nav-item.active {
+        color: var(--text);
+        background: rgba(30, 25, 22, 0.55);
+        border-color: rgba(200, 147, 59, 0.3);
+        box-shadow: 0 0 10px rgba(200, 147, 59, 0.1);
+    }
 
-        .icon {
-            width: 24px;
-            height: 24px;
-            transition: color 0.3s ease;
-        }
+    .container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+        z-index: 1;
+        position: relative;
+    }
 
-        .github-icon .icon {
-            color: #0284c7;
-        }
+    .hero-card {
+        text-align: center;
+        padding: 40px 20px;
+        max-width: 800px;
+        margin: 10vh auto;
+        animation: fadeUp 0.8s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 
-        .info-icon .icon {
-            color: #ff9800;
-        }
+    .hero-desc {
+        color: var(--muted);
+        margin-bottom: 60px;
+        font-size: 18px;
+        line-height: 1.6;
+        max-width: 600px;
+        text-shadow: 2px 2px 0 #000;
+    }
 
-        .download-icon .icon {
-            color: #16a34a;
-        }
-        .launch-icon .icon {
-            color: #0284c7;
-        }
+    .main-logo {
+        image-rendering: auto;
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+        animation: float 4s ease-in-out infinite;
+        width: 400px;
+        height: auto;
+        max-width: 90%;
+        margin-bottom: 20px;
+    }
 
-        .icon-link:hover .icon {
-            color: #fff;
-        }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
 
-        .toast {
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #3F3F46;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            opacity: 0;
-            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.5s ease;
-        }
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+        max-width: 400px;
+    }
 
-        .toast.show {
-            top: 20px;
-            opacity: 1;
-        }
+    .btn {
+        background: rgba(0, 0, 0, 0.5);
+        border: 2px solid var(--muted);
+        color: var(--text);
+        padding: 20px 30px;
+        font-family: var(--font-pixel);
+        font-size: 16px;
+        transition: all 0.2s;
+        border-radius: 0;
+        text-transform: uppercase;
+        cursor: pointer;
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        box-shadow: 4px 4px 0 #000;
+    }
 
-        .toast-content {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+    .btn:hover {
+        background: rgba(100, 100, 100, 0.5);
+        border-color: var(--text);
+        color: #fff;
+        transform: scale(1.02);
+        box-shadow: 6px 6px 0 #000;
+    }
 
-        .toast-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .btn.primary {
+        background: var(--accent);
+        color: #1a1614;
+        border-color: #a07a3b;
+        box-shadow: 4px 4px 0 #000;
+    }
 
-        .toast-label {
-            font-size: 14px;
-            color: #A1A1AA;
-        }
+    .btn.primary:hover {
+        background: var(--accent-hover);
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+        color: #000;
+    }
 
-        .toast-value {
-            font-size: 14px;
-            font-weight: bold;
-        }
+    .section-title {
+        font-family: var(--font-pixel);
+        color: var(--accent);
+        font-size: 18px;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
 
-        .status {
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-left: 8px;
-        }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
 
-        .status.beta {
-            background-color: #8B5CF6;
-            color: white;
-        }
+    .card {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(107, 76, 59, 0.3);
+        border-radius: 8px;
+        padding: 20px;
+        transition: 0.2s;
+    }
 
-        .status.stable {
-            background-color: #10B981;
-            color: white;
-        }
+    .card:hover {
+        border-color: var(--accent);
+        background: rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
 
-        .status.alpha {
-            background-color: #F59E0B;
-            color: white;
-        }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
 
-        .disclaimer {
-            text-align: center;
-            color: #A1A1AA;
-            font-size: 12px;
-            margin-top: 20px;
-            padding: 10px;
-        }
+    .card-title {
+        font-family: var(--font-pixel);
+        font-size: 12px;
+        color: var(--text);
+        line-height: 1.4;
+    }
 
-        .page-selector {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            margin: 20px 0;
-            padding: 12px 0;
-            width: 100%;
-        }
+    .card-desc {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.5;
+    }
 
-        .page-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            height: 32px;
-            padding: 0 12px;
-            border-radius: 16px;
-            background-color: #27272A;
-            color: #A1A1AA;
-            text-decoration: none;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            -webkit-tap-highlight-color: transparent;
-        }
+    .bg-pattern {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+        opacity: 0.1;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='64' height='64' fill='%23120c01'/%3E%3Ccircle cx='32' cy='32' r='8' fill='%23333' opacity='0.3'/%3E%3C/svg%3E");
+        background-size: 64px;
+    }
 
-        .page-link:hover {
-            background-color: #3F3F46;
-            color: white;
-        }
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-        .page-link.active {
-            background-color: #0284c7;
-            color: white;
-        }
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0,0,0,0);
+        white-space: nowrap;
+        border: 0;
+    }
 
-        @media (max-width: 600px) {
-            .app-meta {
-                flex-wrap: wrap;
-            }
+    /* Gallery */
+    .gallery-img {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.2s, border-color 0.2s;
+        cursor: zoom-in;
+        background: #000;
+    }
+
+    .gallery-img:hover {
+        transform: scale(1.02);
+        border-color: var(--accent);
+    }
+
+    .lightbox {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        padding-top: 60px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.9);
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s;
+    }
+
+    .lightbox-content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 1080px;
+        max-height: 80vh;
+        object-fit: contain;
+        border-radius: 4px;
+        border: 2px solid var(--accent);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        animation: zoomIn 0.3s;
+    }
+
+    .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+        z-index: 1001;
+    }
+
+    .lightbox-close:hover {
+        color: var(--accent);
+    }
+
+    @keyframes zoomIn {
+        from { transform: scale(0); }
+        to { transform: scale(1); }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 10000;
+    }
+    .modal.show { display: flex; }
+
+    .modal-panel {
+        background: var(--panel);
+        width: min(720px, 95%);
+        border-radius: 12px;
+        padding: 18px 20px 20px 20px;
+        position: relative;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        backdrop-filter: var(--glass);
+        max-height: 90vh;
+        overflow: auto;
+    }
+
+    .modal-footer {
+        margin-top: 14px;
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .release-card {
+        background: rgba(255, 255, 255, 0.01);
+        border-radius: 8px;
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+    }
+
+    /* Burger Panel */
+    .burger-panel {
+        position: fixed;
+        right: 20px;
+        top: 80px;
+        width: 220px;
+        background: rgba(18, 12, 1, 0.95);
+        border: 2px solid;
+        border-color: #d0d1d4 #5d5d60 #5d5d60 #d0d1d4;
+        padding: 10px;
+        display: none;
+        z-index: 300;
+        box-shadow: 4px 4px 0 #000;
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+    }
+
+    .burger-panel.show { display: block; }
+
+    .burger-panel-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .burger-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        color: var(--text);
+        background: rgba(60, 60, 60, 1);
+        border: 2px solid;
+        border-color: #d0d1d4 #5d5d60 #5d5d60 #d0d1d4;
+        text-decoration: none;
+        font-family: var(--font-pixel);
+        font-size: 12px;
+        box-shadow: 2px 2px 0 #000;
+        cursor: pointer;
+    }
+
+    .burger-link:hover {
+        background: rgba(80, 80, 100, 1);
+        border-color: #fff #888 #888 #fff;
+    }
+
+    .burger-link:active {
+        background: rgba(40, 40, 40, 1);
+        border-color: #5d5d60 #d0d1d4 #d0d1d4 #5d5d60;
+    }
+
+    /* Wiki / Tutorial */
+    .wiki-container {
+        max-width: 900px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .wiki-toc {
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid;
+        border-color: #5d5d60 #d0d1d4 #d0d1d4 #5d5d60;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .wiki-toc h3 {
+        font-family: var(--font-pixel);
+        color: var(--accent);
+        font-size: 14px;
+        text-transform: uppercase;
+        margin: 0 0 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 5px;
+    }
+
+    .wiki-toc ul {
+        list-style: none;
+        padding-left: 5px;
+        margin: 0;
+    }
+
+    .wiki-toc li { margin-bottom: 6px; }
+
+    .wiki-toc a {
+        color: var(--text);
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .wiki-toc a:hover {
+        color: var(--accent);
+        text-decoration: underline;
+    }
+
+    .wiki-article {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .wiki-block {
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid;
+        border-color: #d0d1d4 #5d5d60 #5d5d60 #d0d1d4;
+        padding: 20px;
+    }
+
+    .wiki-header {
+        font-family: var(--font-pixel);
+        color: var(--accent);
+        font-size: 16px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #333;
+    }
+
+    .wiki-text {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #ddd;
+    }
+
+    .wiki-text ol {
+        margin-left: 20px;
+        margin-bottom: 15px;
+    }
+
+    .wiki-text li { margin-bottom: 8px; }
+
+    .wiki-code {
+        background: #111;
+        border: 1px solid #444;
+        padding: 4px 8px;
+        font-family: monospace;
+        color: #8f8;
+        font-size: 12px;
+    }
+
+    .btn-download {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 20px auto;
+        background: #c69c4c;
+        color: #111;
+        font-family: var(--font-pixel);
+        font-size: 16px;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 15px 0;
+        text-decoration: none;
+        border: 2px solid;
+        border-color: #e5c365 #8c6a28 #8c6a28 #e5c365;
+        box-shadow: 4px 4px 0 #000;
+        cursor: pointer;
+    }
+
+    .btn-download:hover {
+        background: #dcb35f;
+        transform: translateY(-2px);
+        box-shadow: 4px 6px 0 #000;
+    }
+
+    .btn-download:active {
+        background: #a8823b;
+        border-color: #8c6a28 #e5c365 #e5c365 #8c6a28;
+        transform: translateY(2px);
+        box-shadow: 2px 2px 0 #000;
+    }
+
+    /* Spinner */
+    .spinner {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 3px solid rgba(255,255,255,0.08);
+        border-top-color: var(--accent);
+        animation: spin .9s linear infinite;
+        margin: 6px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+    }
+
+    /* Credits */
+    .home-credits {
+        margin-top: 40px;
+        text-align: center;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        padding-top: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .header { padding: 15px 10px; }
+        .logo { font-size: 16px; }
+        .main-logo { width: 90% !important; max-width: 400px !important; }
+        .logo-text { display: none; }
+        .nav-item { padding: 8px; font-size: 0; }
+        .nav-item svg { width: 24px; height: 24px; }
+        .burger-panel { right: 10px; top: 60px; }
+    }
+
+    @media (min-width: 800px) {
+        .wiki-container {
+            flex-direction: row;
+            align-items: flex-start;
         }
+        .wiki-toc {
+            width: 250px;
+            position: sticky;
+            top: 100px;
+        }
+        .wiki-article { flex: 1; }
+    }
+
+    @media (max-width: 520px) {
+        .burger-panel { right: 10px; top: 60px; width: 200px; }
+        .modal-panel { padding: 8px; max-width: 360px; margin: 0 12px; max-height: 78vh; }
+        .modal-footer { flex-direction: column; gap: 8px; align-items: stretch; }
+        .modal-footer .btn { width: 100%; padding: 9px 10px; font-size: 13px; }
+    }
+
+    /* Patch Header */
+    .patch-header img {
+        display: block;
+        margin: 8px auto 24px;
+        max-width: 100%;
+        height: auto;
+        max-height: 170px;
+    }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="card-content">
-                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/bookshelf-wUPvdI5dIxes0BlAP6NUGaixvKym7P.png" alt="Minecraft bookshelf block" class="app-icon">
-                <div class="app-info">
-                    <h2 class="app-title">Minecraft 1.1.5</h2>
-                    <p class="app-description">
-                        1.1.5 APK, filled with custom and previously hidden commands, xbox sign-in support, free skins, and pre-added servers.
-                    </p>
-                    <div class="app-meta">
-                        <div class="actions">
-                            <a href="https://archive.org/download/minecraft-115/Minecraft_115.apk" class="icon-link download-icon" aria-label="Download app">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="7 10 12 15 17 10"/>
-                                    <line x1="12" y1="15" x2="12" y2="3"/>
-                                </svg>
+    <div class="bg-pattern"></div>
+
+    <header class="header">
+        <a href="#" onclick="showSection('home'); return false;" class="logo">
+            <svg class="icon-crafting" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="44" height="44" fill="#3d2817"/>
+                <rect x="4" y="4" width="36" height="36" fill="#5d3d1e"/>
+                <rect x="8" y="8" width="28" height="28" fill="#4a3218"/>
+                <rect x="12" y="12" width="8" height="8" fill="#8b6914"/>
+                <rect x="24" y="12" width="8" height="8" fill="#8b6914"/>
+                <rect x="12" y="24" width="8" height="8" fill="#8b6914"/>
+                <rect x="24" y="24" width="8" height="8" fill="#8b6914"/>
+            </svg>
+            <span class="logo-text">BETAFIED</span>
+            <span class="sr-only">Betafied</span>
+        </a>
+        <nav class="nav-links">
+            <a href="#" onclick="showSection('home'); return false;" class="nav-item active" id="nav-home" title="Home">
+                <svg viewBox="0 0 24 24" width="20" height="20" class="nav-icon" style="fill:currentColor; display:block;">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+            </a>
+            <a href="#" onclick="showSection('patch-notes'); return false;" class="nav-item" id="nav-patch" title="Patch Notes">
+                <svg viewBox="0 0 24 24" width="20" height="20" class="nav-icon" style="fill:currentColor; display:block;">
+                   <path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                </svg>
+            </a>
+            <button id="nav-burger" class="nav-item burger" aria-expanded="false" title="Menu">
+                <svg viewBox="0 0 24 24" width="20" height="20" class="nav-icon" style="fill:currentColor; display:block;">
+                    <path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"/>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Burger panel -->
+    <div id="burger-panel" class="burger-panel" aria-hidden="true">
+        <div class="burger-panel-inner">
+            <a href="#" id="nav-gallery" onclick="showSection('gallery'); closeBurger(); return false;" class="burger-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" style="fill:currentColor;"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                <span>Gallery</span>
+            </a>
+            <a href="https://discord.gg/JfDaeEYeYd" target="_blank" class="burger-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" style="fill:currentColor;"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.086 2.176 2.419 0 1.334-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.086 2.176 2.419 0 1.334-.946 2.419-2.157 2.419z"/></svg>
+                <span>Discord</span>
+            </a>
+            <a href="https://github.com/betafiedmc/betafied-addon" target="_blank" class="burger-link">
+                <svg viewBox="0 0 98 96" width="18" height="18" style="fill:currentColor;"><path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"/></svg>
+                <span>GitHub</span>
+            </a>
+            <a href="#" id="nav-tutorial" onclick="showSection('tutorial'); closeBurger(); return false;" class="burger-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" style="fill:currentColor;"><path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+                <span>Tutorial</span>
+            </a>
+        </div>
+    </div>
+
+    <main class="container">
+        
+        <!-- Home View -->
+        <div id="home-view" class="view-section">
+            <div class="hero-card">
+                <svg class="main-logo" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#f4d03f"/>
+                            <stop offset="50%" style="stop-color:#c8933b"/>
+                            <stop offset="100%" style="stop-color:#8b6914"/>
+                        </linearGradient>
+                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="3" dy="3" stdDeviation="2" flood-color="#000" flood-opacity="0.5"/>
+                        </filter>
+                    </defs>
+                    <text x="200" y="70" text-anchor="middle" font-family="'Press Start 2P', cursive" font-size="42" fill="url(#goldGrad)" filter="url(#shadow)">BETAFIED</text>
+                </svg>
+                
+                <p class="hero-desc">
+                    Experience the golden age of Beta 1.7.3 in modern Bedrock Edition.
+                    <br>
+                    <span id="hero-version" style="font-size:14px; opacity:0.8; color:#aaa;">v3.0.4 • Updated Dec 21, 2025</span>
+                </p>
+
+                <div class="action-buttons">
+                    <a id="download-add-on" href="#" class="btn primary" onclick="openReleaseModal(); return false;">
+                        Download Addon
+                    </a>
+                    
+                    <a href="#" onclick="showSection('tutorial'); return false;" class="btn">
+                        Read Tutorial
+                    </a>
+                </div>
+
+                <section class="home-credits">
+                    <div style="display:flex; justify-content:center; gap:40px; flex-wrap:wrap;">
+                        <div>
+                            <strong style="color:var(--text); font-size:12px; display:block; margin-bottom:8px;">Betafied Developer</strong>
+                            <a href="https://github.com/xzelleiv" target="_blank" style="color:var(--muted); font-size:11px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px;">
+                                Keirazelle / xzelleiv
                             </a>
-                            <div class="icon-link info-icon" aria-label="Show app information" onclick="showToast('toast-1')">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                                </svg>
+                        </div>
+                        <div>
+                            <strong style="color:var(--text); font-size:12px; display:block; margin-bottom:8px;">Maintainers</strong>
+                            <div style="color:var(--muted); font-size:11px;">
+                                Merb, notchyves
                             </div>
-                            <a href="btb://btb/" class="icon-link launch-icon" aria-label="Launch app">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <polygon points="10 8 16 12 10 16 10 8" />
-                                </svg>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Patch Notes View -->
+        <div id="patch-notes-view" class="view-section" style="display:none;">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <section style="margin-bottom: 60px;">
+                    <div class="patch-header">
+                        <svg viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg" style="max-width: 300px; height: auto;">
+                            <defs>
+                                <linearGradient id="patchGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#f4d03f"/>
+                                    <stop offset="100%" style="stop-color:#c8933b"/>
+                                </linearGradient>
+                            </defs>
+                            <text x="150" y="35" text-anchor="middle" font-family="'Press Start 2P', cursive" font-size="20" fill="url(#patchGrad)">PATCH NOTES</text>
+                        </svg>
+                        <h2 class="sr-only">Patch Notes</h2>
+                    </div>
+                    
+                    <div id="patch-notes-grid" class="grid" style="grid-template-columns: 1fr;">
+                        <div id="patch-notes-loading" class="spinner-row">
+                            <div class="spinner"></div>
+                            <div style="color:var(--muted); font-size:13px;">Loading patch notes…</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section style="margin-top: 40px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 40px;">
+                    <div style="display:flex; justify-content:center; gap:40px; flex-wrap:wrap;">
+                        <div>
+                            <strong style="color:var(--text); font-size:14px; display:block; margin-bottom:8px;">Betafied Developer</strong>
+                            <a href="https://github.com/xzelleiv" target="_blank" style="color:var(--muted); font-size:13px; text-decoration:none;">
+                                Keirazelle / xzelleiv
                             </a>
+                        </div>
+                        <div>
+                            <strong style="color:var(--text); font-size:14px; display:block; margin-bottom:8px;">Maintainers</strong>
+                            <div style="color:var(--muted); font-size:13px;">
+                                Merb, notchyves
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Gallery View -->
+        <div id="gallery-view" class="view-section" style="display:none;">
+            <div style="max-width: 1000px; margin: 0 auto;">
+                <div style="text-align:center; margin-bottom: 25px;">
+                    <svg viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg" style="max-width: 300px; height: auto;">
+                        <text x="150" y="35" text-anchor="middle" font-family="'Press Start 2P', cursive" font-size="20" fill="#c8933b">SCREENSHOTS</text>
+                    </svg>
+                </div>
+                <div class="grid gallery-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                    <img src="/placeholder.svg?height=180&width=320" class="gallery-img" onclick="openLightbox(this)" alt="Screenshot 1">
+                    <img src="/placeholder.svg?height=180&width=320" class="gallery-img" onclick="openLightbox(this)" alt="Screenshot 2">
+                    <img src="/placeholder.svg?height=180&width=320" class="gallery-img" onclick="openLightbox(this)" alt="Screenshot 3">
+                    <img src="/placeholder.svg?height=180&width=320" class="gallery-img" onclick="openLightbox(this)" alt="Screenshot 4">
+                    <img src="/placeholder.svg?height=180&width=320" class="gallery-img" onclick="openLightbox(this)" alt="Screenshot 5">
+                    <img src="/placeholder.svg?height=180&width=320" class="gallery-img" onclick="openLightbox(this)" alt="Screenshot 6">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutorial View -->
+        <div id="tutorial-view" class="view-section" style="display:none;">
+            <div style="text-align:center; margin-bottom: 25px;">
+                <svg viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg" style="max-width: 300px; height: auto;">
+                    <text x="150" y="35" text-anchor="middle" font-family="'Press Start 2P', cursive" font-size="24" fill="#c8933b">TUTORIAL</text>
+                </svg>
+            </div>
+
+            <div class="wiki-container">   
+                <div class="wiki-toc">
+                    <h3>Wiki</h3>
+                    <ul>
+                        <li><a href="#download">How To Download Addon</a></li>
+                        <li><a href="#update">How To Update</a></li>
+                        <li><a href="#" style="color:var(--muted); cursor:default;">Troubleshooting (Coming Soon)</a></li>
+                    </ul>
+                </div>
+
+                <div class="wiki-article">
+                    <div id="download" class="wiki-block">
+                        <div class="wiki-header">How To Download Addon</div>
+                        <div class="wiki-text">
+                            <p>Follow these steps to download the Betafied Addon for Minecraft Bedrock Edition.</p>
+                            <br>
+                            <ol>
+                                <li>
+                                    <strong>Click the Download Button</strong><br>
+                                    Click "Download Addon" button below to get the latest version directly.
+                                    <a id="wiki-download-btn" href="#" class="btn-download" download>Download Addon</a>
+                                </li>
+                                <li>
+                                    <strong>Save the File</strong><br>
+                                    Wait for the download to finish. You should have a file ending in <span class="wiki-code">.mctemplate</span>.
+                                </li>
+                                <li>
+                                    <strong>Import to Minecraft</strong><br>
+                                    Double click the downloaded <span class="wiki-code">.mctemplate</span> file to automatically launch Minecraft and import the addon.
+                                </li>
+                            </ol>
+                            <br><br>
+                            <p style="text-align:center; font-size:12px; color:var(--muted);">
+                                (Requires Minecraft Bedrock Edition)
+                            </p>
+                            <p style="text-align:center; font-size:12px; color:var(--muted);">
+                                <a href="https://discord.gg/vCaUNmFPK4" target="_blank" style="color:var(--muted); text-decoration:none;">Join the Discord for more info and questions</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="update" class="wiki-block">
+                        <div class="wiki-header">How To Update</div>
+                        <div class="wiki-text">
+                            <p>If you already have a previous version of Betafied, follow these steps to update safely.</p>
+                            <br>
+                            <ol>
+                                <li>
+                                    <strong>Join the Discord</strong><br>
+                                    Join our community server: <a href="https://discord.gg/vCaUNmFPK4" target="_blank" style="color:var(--accent);">Betafied Discord</a>.
+                                </li>
+                                <li>
+                                    <strong>Download the Update</strong><br>
+                                    Go to the <strong>#downloads</strong> channel and download the latest <span class="wiki-code">.mcaddon</span> file.
+                                </li>
+                                <li>
+                                    <strong>Prepare Your World</strong><br>
+                                    Open Minecraft and go to <strong>Create New World</strong> > <strong>Owned</strong> section.
+                                </li>
+                                <li>
+                                    <strong>Unlock the Template</strong><br>
+                                    Select your Betafied world template and unlock the template to make it editable.
+                                </li>
+                                <li>
+                                    <strong>Remove Old Packs</strong><br>
+                                    In the world settings, go to Resource Packs & Behavior Packs and remove the old "Betafied" versions.
+                                </li>
+                                <li>
+                                    <strong>Install New Version</strong><br>
+                                    Import and activate the new <span class="wiki-code">.mcaddon</span> you downloaded to update your world.
+                                </li>
+                            </ol>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </main>
 
-        <div class="card">
-            <div class="card-content">
-                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/furnace-TBDURqAxWQqM7R4GL3zaWA1qmuHTcu.png" alt="Minecraft furnace block" class="app-icon">
-                <div class="app-info">
-                    <h2 class="app-title">Minecraft 0.15.10</h2>
-                    <p class="app-description">
-                        0.15.10 APK with fixed UI, xbox sign-in support and free skins, with working pack loading.
-                    </p>
-                    <div class="app-meta">
-                        <div class="actions">
-                            <a href="https://www.mediafire.com/file/35qcw1jq229nzo7/Minecraft_0.15.10.apk/file" class="icon-link download-icon" aria-label="Download app">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="7 10 12 15 17 10"/>
-                                    <line x1="12" y1="15" x2="12" y2="3"/>
-                                </svg>
-                            </a>
-                            <div class="icon-link info-icon" aria-label="Show app information" onclick="showToast('toast-2')">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                                </svg>
-                            </div>
-                            <a href="bqb://bqb/" class="icon-link launch-icon" aria-label="Launch app">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <polygon points="10 8 16 12 10 16 10 8" />
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-content">
-                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/craftingtable-ttEfkXw9HmLhDjQxpRLsLrfQNZccXa.png" alt="Minecraft crafting table block" class="app-icon">
-                <div class="app-info">
-                    <h2 class="app-title">Minecraft 0.8.1</h2>
-                    <p class="app-description">
-                        0.8.1 APK with bug fixes, no sign in support as of right now. :(
-                    </p>
-                    <div class="app-meta">
-                        <div class="actions">
-                            <a href="https://www.mediafire.com/file/gnxbi2bm13cwjkk/Minecraft_0.8.1.apk/file" class="icon-link download-icon" aria-label="Download app">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="7 10 12 15 17 10"/>
-                                    <line x1="12" y1="15" x2="12" y2="3"/>
-                                </svg>
-                            </a>
-                            <div class="icon-link info-icon" aria-label="Show app information" onclick="showToast('toast-3')">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                                </svg>
-                            </div>
-                            <a href="bcb://bcb/" class="icon-link launch-icon" aria-label="Launch app">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <polygon points="10 8 16 12 10 16 10 8" />
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="page-selector">
-            <a href="index.html" class="page-link active">Minecraft</a>
-            <a href="index2.html" class="page-link">Blocklauncher</a>
-            <a href="index3.html" class="page-link">Toolbox</a>
-        </div>
-
-        <div class="disclaimer">
-            ⓘ Before The Bloat, is not affiliated with MOJANG or BTA, otherwise known as "Better Than Adventure"
-        </div>
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
     </div>
 
-    <div id="toast-1" class="toast">
-        <div class="toast-content">
-            <div class="toast-row">
-                <span class="toast-label">Status:</span>
-                <span class="status stable">Stable</span>
-            </div>
-            <div class="toast-row">
-                <span class="toast-label">Latest:</span>
-                <span class="toast-value">1.3.7</span>
+    <!-- Release Modal -->
+    <div id="release-modal" class="modal" aria-hidden="true" onclick="if(event.target===this) closeReleaseModal();">
+        <div class="modal-panel">
+            <div id="modal-release-card" class="release-card"></div>
+            <div class="modal-footer">
+                <a id="modal-download-btn" class="btn primary" href="#">Download</a>
+                <a id="modal-release-page" class="btn" href="#" target="_blank" rel="noopener noreferrer">Release page →</a>
             </div>
         </div>
     </div>
 
-    <div id="toast-2" class="toast">
-        <div class="toast-content">
-            <div class="toast-row">
-                <span class="toast-label">Status:</span>
-                <span class="status stable">Stable</span>
-            </div>
-            <div class="toast-row">
-                <span class="toast-label">Latest:</span>
-                <span class="toast-value">0.7.3</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="toast-3" class="toast">
-        <div class="toast-content">
-            <div class="toast-row">
-                <span class="toast-label">Status:</span>
-                <span class="status alpha">Alpha</span>
-            </div>
-            <div class="toast-row">
-                <span class="toast-label">Latest:</span>
-                <span class="toast-value">0.3.8</span>
-            </div>
-        </div>
-    </div>
+    <!-- Marked.js for rendering markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <script>
-        function showToast(toastId) {
-            const toast = document.getElementById(toastId);
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 1300);
+        // Section navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
+            
+            if(sectionId === 'home') document.getElementById('home-view').style.display = 'block';
+            if(sectionId === 'patch-notes') document.getElementById('patch-notes-view').style.display = 'block';
+            if(sectionId === 'gallery') document.getElementById('gallery-view').style.display = 'block';
+            if(sectionId === 'tutorial') document.getElementById('tutorial-view').style.display = 'block';
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(sectionId === 'home') document.getElementById('nav-home').classList.add('active');
+            if(sectionId === 'patch-notes') document.getElementById('nav-patch').classList.add('active');
+            
+            document.querySelectorAll('.burger-link').forEach(el => el.classList.remove('active'));
+            if(sectionId === 'gallery') {
+                const g = document.getElementById('nav-gallery');
+                if(g) g.classList.add('active');
+            }
+            if(sectionId === 'tutorial') {
+                const t = document.getElementById('nav-tutorial');
+                if(t) t.classList.add('active');
+            }
+
+            window.scrollTo(0, 0);
         }
+
+        // Lightbox
+        function openLightbox(img) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightbox.style.display = "flex";
+            lightboxImg.src = img.src;
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = "none";
+        }
+
+        // Release Modal
+        function openReleaseModal(){
+            const modal = document.getElementById('release-modal');
+            if(modal){
+                modal.style.display = 'flex';
+                modal.setAttribute('aria-hidden','false');
+                modal.classList.add('show');
+            }
+        }
+        function closeReleaseModal(){
+            const modal = document.getElementById('release-modal');
+            if(modal){
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden','true');
+                modal.classList.remove('show');
+            }
+        }
+        document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeReleaseModal(); });
+
+        // Fetch latest release
+        (function(){
+            async function renderLatestRelease(){
+                const owner = 'betafiedmc';
+                const repo = 'betafied-addon';
+                const card = document.getElementById('modal-release-card');
+                const modalDownloadBtn = document.getElementById('modal-download-btn');
+                const modalReleasePage = document.getElementById('modal-release-page');
+                const heroVersion = document.getElementById('hero-version');
+                const heroDownloadBtn = document.getElementById('download-add-on');
+                const wikiDownloadBtn = document.getElementById('wiki-download-btn');
+                
+                if(!card) return;
+                card.innerHTML = '<div class="spinner-row"><div class="spinner"></div><div style="color:var(--muted); font-size:13px;">Loading release…</div></div>';
+
+                try{
+                    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases/latest`);
+                    if(!res.ok) throw new Error('GitHub API error '+res.status);
+                    const rel = await res.json();
+                    const title = rel.name || rel.tag_name || 'Latest Release';
+                    const published = rel.published_at ? new Date(rel.published_at).toLocaleDateString() : '';
+                    const body = (rel.body||'').replace(/\n/g,'<br>');
+                    let asset = null;
+                    if(Array.isArray(rel.assets)){
+                        asset = rel.assets.find(a => a.name && a.name.toLowerCase().endsWith('.mctemplate')) || rel.assets[0] || null;
+                    }
+
+                    card.innerHTML = `
+                        <div style="border:1px solid rgba(255,255,255,0.06); padding:14px; border-radius:10px; background:rgba(255,255,255,0.01);">
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" style="width:36px;height:36px;filter:grayscale(1);opacity:0.9;border-radius:6px;">
+                                <div>
+                                    <div style="font-weight:600;color:var(--text,#fff);">${title}</div>
+                                    <div style="font-size:12px;color:var(--muted,#aaa);">${published}</div>
+                                </div>
+                            </div>
+                            <div style="font-size:14px;color:var(--muted,#ddd);margin-bottom:12px;">${body}</div>
+                        </div>`;
+
+                    if(modalDownloadBtn && asset){
+                        modalDownloadBtn.href = asset.browser_download_url;
+                        modalDownloadBtn.setAttribute('download','');
+                        modalDownloadBtn.target = '_blank';
+                        modalDownloadBtn.textContent = `Download ${asset.name}`;
+                    }
+                    if(modalReleasePage){ modalReleasePage.href = rel.html_url; }
+
+                    if(heroVersion){
+                        const versionLabel = rel.tag_name || rel.name || '';
+                        heroVersion.textContent = `${versionLabel} • Updated ${published}`;
+                    }
+                    if(heroDownloadBtn && asset){
+                        heroDownloadBtn.href = asset.browser_download_url;
+                        heroDownloadBtn.setAttribute('download','');
+                        heroDownloadBtn.target = '_blank';
+                    }
+                    if(wikiDownloadBtn && asset){
+                        wikiDownloadBtn.href = asset.browser_download_url;
+                        wikiDownloadBtn.setAttribute('download','');
+                        wikiDownloadBtn.target = '_blank';
+                    }
+                }catch(err){
+                    card.innerHTML = '<div style="color:#f88">Could not load release info.</div>';
+                    console.error(err);
+                }
+            }
+            window.addEventListener('DOMContentLoaded', renderLatestRelease);
+        })();
+
+        // Click sound and burger menu
+        (function(){
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            let clickCtx = null;
+            function ensureCtx(){
+                if(!clickCtx) clickCtx = new AudioContext();
+                return clickCtx;
+            }
+
+            function playSynth(){
+                try{
+                    const ctx = ensureCtx();
+                    if(ctx.state === 'suspended') ctx.resume();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(1000, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + 0.002);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.09);
+                }catch(e){}
+            }
+
+            function playClick(){ playSynth(); }
+
+            document.addEventListener('click', function(e){
+                const el = e.target.closest('.btn, .nav-item, .burger-link, #nav-burger');
+                if(el){ playClick(); }
+            }, true);
+
+            const burgerBtn = document.getElementById('nav-burger');
+            const burgerPanel = document.getElementById('burger-panel');
+
+            function openBurger(){
+                if(burgerPanel){ burgerPanel.setAttribute('aria-hidden','false'); burgerPanel.classList.add('show'); }
+                if(burgerBtn) burgerBtn.setAttribute('aria-expanded','true');
+            }
+            function closeBurger(){
+                if(burgerPanel){ burgerPanel.setAttribute('aria-hidden','true'); burgerPanel.classList.remove('show'); }
+                if(burgerBtn) burgerBtn.setAttribute('aria-expanded','false');
+            }
+            function toggleBurger(){
+                if(burgerPanel && burgerPanel.classList.contains('show')) closeBurger(); else openBurger();
+            }
+
+            if(burgerBtn){ burgerBtn.addEventListener('click', function(e){ e.stopPropagation(); toggleBurger(); }); }
+            document.addEventListener('click', function(e){ if(!e.target.closest('.burger-panel') && !e.target.closest('#nav-burger')) closeBurger(); });
+            document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeBurger(); });
+
+            window.openBurger = openBurger;
+            window.closeBurger = closeBurger;
+        })();
+
+        // Patch Notes
+        (function(){
+            async function renderPatchNotes(){
+                const owner = 'betafiedmc';
+                const repo = 'betafied-addon';
+                const grid = document.getElementById('patch-notes-grid');
+                if(!grid) return;
+
+                grid.innerHTML = '<div class="spinner-row"><div class="spinner"></div><div style="color:var(--muted); font-size:13px;">Loading patch notes…</div></div>';
+
+                try{
+                    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases`);
+                    if(!res.ok) throw new Error('GitHub API error '+res.status);
+                    const releases = await res.json();
+                    if(!Array.isArray(releases) || releases.length === 0) throw new Error('No releases');
+                    
+                    const filtered = releases.slice(0, 10);
+
+                    if(!filtered.length){
+                        grid.innerHTML = '<div style="padding:12px;color:var(--muted);">No recent patch notes available.</div>';
+                        return;
+                    }
+
+                    const html = filtered.map(rel => {
+                        const title = rel.name || rel.tag_name || 'Release';
+                        const published = rel.published_at ? new Date(rel.published_at).toLocaleDateString() : '';
+                        const bodyHtml = rel.body && typeof marked !== 'undefined' ? marked.parse(rel.body) : (rel.body || '').replace(/\n/g, '<br>');
+                        return `
+                            <div class="card">
+                                <div class="card-header">
+                                    <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+                                        <div style="font-size:16px; color:var(--text); font-weight:600;">${title}</div>
+                                        <div style="font-size:12px; color:var(--muted);">${published}</div>
+                                    </div>
+                                </div>
+                                <div class="card-desc">${bodyHtml}</div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    grid.innerHTML = html;
+                }catch(err){
+                    console.error('Could not load patch notes from GitHub', err);
+                    grid.innerHTML = '<div style="color:#f88; padding:12px;">Could not load patch notes from GitHub.</div>';
+                }
+            }
+            window.addEventListener('DOMContentLoaded', renderPatchNotes);
+        })();
     </script>
 </body>
 </html>
-
